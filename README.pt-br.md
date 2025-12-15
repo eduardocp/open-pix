@@ -73,7 +73,7 @@ using OpenPix;
 
 var payload = PixBuilder.Create()
     .WithKey("usuario@exemplo.com")
-    .WithMerchant("Nome Da Loja", "Sao Paulo")
+    .WithMerchant("Nome Da Loja", "Sao Paulo", "12345-000") // CEP (Opcional)
     .WithAmount(12.50m)
     .WithTransactionId("PEDIDO12345")
     .Build();
@@ -139,6 +139,37 @@ string base64Png = payload.ToPngBase64(pixelsPerModule: 10);
 
 // Gera uma string SVG para gráficos vetoriais escaláveis
 string svgContent = payload.ToSvg();
+
+// Gera uma arte ASCII para aplicações de console
+Console.WriteLine(payload.ToAsciiArt());
+```
+
+---
+
+## 🖥️ Ferramenta CLI
+
+Você pode usar o OpenPix diretamente do seu terminal para gerar e ler códigos PIX.
+
+### Instalação
+
+```bash
+# Rodar a partir do código fonte (dev)
+dotnet run --project src/OpenPix.Cli -- --help
+
+# Ou instalar como ferramenta global (uma vez empacotado)
+dotnet tool install -g OpenPix.Cli
+```
+
+### Como Usar
+
+**Gerar um Pix:**
+```bash
+openpix gen --name "Minha Loja" --city "Sao Paulo" --zip "12345-000" --key "usuario@exemplo.com" --amount 10.50
+```
+
+**Ler (Decodificar) um Pix:**
+```bash
+openpix decode "00020126..."
 ```
 
 ---

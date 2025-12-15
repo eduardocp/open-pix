@@ -74,7 +74,7 @@ using OpenPix;
 
 var payload = PixBuilder.Create()
     .WithKey("user@example.com")
-    .WithMerchant("My Store Name", "Sao Paulo")
+    .WithMerchant("My Store Name", "Sao Paulo", "12345-000") // ZipCode (Optional)
     .WithAmount(12.50m)
     .WithTransactionId("ORDER12345")
     .Build();
@@ -140,6 +140,37 @@ string base64Png = payload.ToPngBase64(pixelsPerModule: 10);
 
 // Generates an SVG string for scalable vector graphics
 string svgContent = payload.ToSvg();
+
+// Generates an ASCII Art string for console applications
+Console.WriteLine(payload.ToAsciiArt());
+```
+
+---
+
+## 🖥️ CLI Tool
+
+You can use OpenPix directly from your terminal to generate and decode PIX strings.
+
+### Installation
+
+```bash
+# Run from source (dev)
+dotnet run --project src/OpenPix.Cli -- --help
+
+# Or install as a global tool (once packed)
+dotnet tool install -g OpenPix.Cli
+```
+
+### Usage
+
+**Generate a Pix:**
+```bash
+openpix gen --name "My Store" --city "Sao Paulo" --zip "12345-000" --key "user@example.com" --amount 10.50
+```
+
+**Decode a Pix:**
+```bash
+openpix decode "00020126..."
 ```
 
 ---
