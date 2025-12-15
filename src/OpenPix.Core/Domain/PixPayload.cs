@@ -13,8 +13,5 @@ public record PixPayload(string RawString)
     public decimal? Amount { get; init; }
     public string Description { get; init; } = string.Empty;
 
-    public PixPayload(string rawString)
-    {
-        RawString = rawString;
-    }
+
 }

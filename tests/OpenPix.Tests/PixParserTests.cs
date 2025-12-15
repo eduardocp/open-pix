@@ -14,7 +14,7 @@ public class PixParserTests
 
         // Act & Assert
         var ex = Assert.Throws<ArgumentException>(() => PixParser.Parse(corruptedPix));
-        Assert.Contains("CRC Inválido", ex.Message);
+        Assert.Contains("Invalid CRC", ex.Message);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class PixParserTests
     {
         var zipCode = "12345678";
         var payload = PixBuilder.Create()
-            .WithKey("chave@pix")
+            .WithKey("chave@pix.com") // Use valid email
             .WithMerchant("Loja", "Cidade", zipCode)
             .Build();
 

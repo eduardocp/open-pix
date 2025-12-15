@@ -31,8 +31,9 @@ public class PixBuilderTests
         var zipCode = "12345678";
         
         // Act
+        // Use a valid email key to pass validation
         var payload = PixBuilder.Create()
-            .WithKey("test@key")
+            .WithKey("test@pix.com")
             .WithMerchant("Loja", "Sao Paulo", zipCode)
             .WithAmount(10.00m)
             .Build();
@@ -57,31 +58,35 @@ public class PixBuilderTests
         // Act & Assert
         var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
 
-        Assert.Contains("WithKey", ex.Message);
-        Assert.Contains("WithDynamicUrl", ex.Message);
+        // Asserts 'Cannot configure both Key (.WithKey) and URL (.WithDynamicUrl) at the same time.'
+        Assert.Contains("Cannot configure both Key", ex.Message);
     }
 
     [Fact]
     public void Should_Throw_If_Url_Is_Not_Https()
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        var ex = Assert.Throws<ArgumentException>(() =>
             PixBuilder.Create().WithDynamicUrl("http://inseguro.com")
         );
+        Assert.Contains("must be HTTPS", ex.Message);
     }
     
     [Fact]
     public void Should_Throw_If_Amount_Is_Negative_Or_Zero()
     {
-         Assert.Throws<ArgumentOutOfRangeException>(() => PixBuilder.Create().WithAmount(-1));
-         Assert.Throws<ArgumentOutOfRangeException>(() => PixBuilder.Create().WithAmount(0));
+         var ex1 = Assert.Throws<ArgumentOutOfRangeException>(() => PixBuilder.Create().WithAmount(-1));
+         Assert.Contains("must be positive", ex1.Message);
+
+         var ex2 = Assert.Throws<ArgumentOutOfRangeException>(() => PixBuilder.Create().WithAmount(0));
+         Assert.Contains("must be positive", ex2.Message);
     }
 
     [Fact]
     public void Should_Throw_If_No_Merchant_Is_Provided()
     {
         var builder = PixBuilder.Create()
-            .WithKey("test@key");
+            .WithKey("test@pix.com"); // Valid key
             
         var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
         Assert.Contains("Merchant info is required", ex.Message);
@@ -94,7 +99,7 @@ public class PixBuilderTests
             .WithMerchant("Loja", "Cidade");
             
         var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
-        Assert.Contains("Configure uma Chave", ex.Message);
+        Assert.Contains("Configure a Key", ex.Message);
     }
 
     [Fact]
