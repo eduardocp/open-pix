@@ -1,20 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>OpenPix.Core</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>Eduardo Carisio</Authors>
-    <Company>Eduardo Carisio</Company>
     <Description>High-performance, clean-code .NET library for handling Brazilian PIX (EMV BR Code) payments. Zero dependencies.</Description>
     <PackageTags>pix;brazil;payments;emv;qrcode;fintech;dotnet-core</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/eduardocp/open-pix</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-
     <Optimize>true</Optimize>
   </PropertyGroup>
 
