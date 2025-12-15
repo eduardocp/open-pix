@@ -53,4 +53,31 @@ public class PixParserTests
         Assert.Equal(url, result.Url); // Deve ter preenchido a URL
         Assert.Null(result.PixKey);    // A chave deve estar nula
     }
+    [Fact]
+    public void Should_Throw_Exception_If_PixString_Is_Null_Or_WhiteSpace()
+    {
+        Assert.Throws<ArgumentNullException>(() => PixParser.Parse(null!));
+        Assert.Throws<ArgumentNullException>(() => PixParser.Parse(""));
+        Assert.Throws<ArgumentNullException>(() => PixParser.Parse("   "));
+    }
+
+    [Fact]
+    public void Should_Throw_Exception_If_PixString_Is_Too_Short()
+    {
+        Assert.Throws<ArgumentException>(() => PixParser.Parse("123"));
+    }
+
+    [Fact]
+    public void Should_Return_Null_Merchant_If_Tags_Missing()
+    {
+        // Construct minimal payload: "000201" + "6304" (CRC tag)
+        var rawWithoutCrc = "0002016304";
+        var crc = OpenPix.Core.Infra.Crc16.ComputeChecksum(rawWithoutCrc);
+        var pix = rawWithoutCrc + crc;
+
+        var result = PixParser.Parse(pix);
+
+        Assert.Null(result.Merchant);
+        Assert.NotNull(result.RawString);
+    }
 }
