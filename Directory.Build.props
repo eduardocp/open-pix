@@ -1,8 +1,5 @@
 <Project>
   <PropertyGroup>
-    <!-- Versioning - Centralized -->
-    <Version>1.0.0</Version>
-    
     <!-- Metadata -->
     <Authors>Eduardo Carisio</Authors>
     <Company>Eduardo Carisio</Company>
@@ -24,5 +21,13 @@
   <!-- Include README in all nuget packages automatically -->
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Automatic Versioning with MinVer -->
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>
