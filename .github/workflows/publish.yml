@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+      with:
+        fetch-depth: 0 # Required for MinVer to calculate version
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -24,20 +26,19 @@ jobs:
     - name: Test
       run: dotnet test OpenPix.sln --no-build --configuration Release
 
-    # Publish OpenPix.Core
+    # Pack all projects
     - name: Pack OpenPix.Core
       run: dotnet pack src/OpenPix.Core/OpenPix.Core.csproj --no-build --configuration Release --output .
 
-    # Publish OpenPix.QRCode
     - name: Pack OpenPix.QRCode
       run: dotnet pack src/OpenPix.QRCode/OpenPix.QRCode.csproj --no-build --configuration Release --output .
 
-    # Publish OpenPix.AspNetCore
     - name: Pack OpenPix.AspNetCore
       run: dotnet pack src/OpenPix.AspNetCore/OpenPix.AspNetCore.csproj --no-build --configuration Release --output .
 
-    # Push to NuGet (Requires NUGET_API_KEY secret)
-    # Uncomment the lines below after setting up the secret in GitHub > Settings > Secrets > Actions
-    
-    # - name: Push to NuGet
-    #   run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+    - name: Pack OpenPix.Cli
+      run: dotnet pack src/OpenPix.Cli/OpenPix.Cli.csproj --no-build --configuration Release --output .
+
+    # Push to NuGet
+    - name: Push to NuGet
+      run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
