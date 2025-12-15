@@ -1,0 +1,43 @@
+name: Publish to NuGet
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore OpenPix.sln
+
+    - name: Build
+      run: dotnet build OpenPix.sln --no-restore --configuration Release
+
+    - name: Test
+      run: dotnet test OpenPix.sln --no-build --configuration Release
+
+    # Publish OpenPix.Core
+    - name: Pack OpenPix.Core
+      run: dotnet pack src/OpenPix.Core/OpenPix.Core.csproj --no-build --configuration Release --output .
+
+    # Publish OpenPix.QRCode
+    - name: Pack OpenPix.QRCode
+      run: dotnet pack src/OpenPix.QRCode/OpenPix.QRCode.csproj --no-build --configuration Release --output .
+
+    # Publish OpenPix.AspNetCore
+    - name: Pack OpenPix.AspNetCore
+      run: dotnet pack src/OpenPix.AspNetCore/OpenPix.AspNetCore.csproj --no-build --configuration Release --output .
+
+    # Push to NuGet (Requires NUGET_API_KEY secret)
+    # Uncomment the lines below after setting up the secret in GitHub > Settings > Secrets > Actions
+    
+    # - name: Push to NuGet
+    #   run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

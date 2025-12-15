@@ -7,6 +7,9 @@
 [![License](https://img.shields.io/github/license/eduardocp/open-pix)](LICENSE)
 [![codecov](https://codecov.io/github/eduardocp/open-pix/graph/badge.svg?token=GDCOG0D4UR)](https://codecov.io/github/eduardocp/open-pix)
 
+
+> 🇧🇷 [Leia em Português](README.pt-br.md)
+
 ## 💡 Why OpenPix?
 
 Most PIX implementations in .NET rely on string concatenation and lack proper validation. **OpenPix** was built with **Domain-Driven Design (DDD)** and **Performance** in mind.

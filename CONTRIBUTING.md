@@ -38,4 +38,12 @@ This section guides you through submitting a bug report for OpenPix. Following t
 - **Zero Allocation** is a goal for the Parser. Avoid `
 ew` inside loops.
 
+### Code of Conduct
+
+Please note that we have a [Code of Conduct](CODE_OF_CONDUCT.md). Please follow it in all your interactions with the project.
+
+### Missing a Feature?
+
+You can request a new feature by submitting an issue to our [GitHub Repository](https://github.com/eduardocp/open-pix/issues). If you would like to implement a new feature, please submit an issue with a proposal for your work first, to be sure that we can use it.
+
 Happy Coding!
