@@ -33,4 +33,18 @@ public class MerchantTests
         Assert.Equal(25, merchant.Name.Length);
         Assert.Equal("Empresa Muito Grande LTDA", merchant.Name);
     }
+
+    [Fact]
+    public void Should_Truncate_City_If_Too_Long()
+    {
+        // Arrange (Cidade com mais de 15 chars)
+        var longCity = "Pindamonhangaba do Norte"; // 24 chars
+
+        // Act
+        var merchant = new Merchant("Loja", longCity);
+
+        // Assert (Deve cortar no 15º caractere)
+        Assert.Equal(15, merchant.City.Length);
+        Assert.Equal("Pindamonhangaba", merchant.City);
+    }
 }

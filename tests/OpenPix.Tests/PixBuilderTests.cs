@@ -50,4 +50,38 @@ public class PixBuilderTests
             PixBuilder.Create().WithDynamicUrl("http://inseguro.com")
         );
     }
+    
+    [Fact]
+    public void Should_Throw_If_Amount_Is_Negative_Or_Zero()
+    {
+         Assert.Throws<ArgumentOutOfRangeException>(() => PixBuilder.Create().WithAmount(-1));
+         Assert.Throws<ArgumentOutOfRangeException>(() => PixBuilder.Create().WithAmount(0));
+    }
+
+    [Fact]
+    public void Should_Throw_If_No_Merchant_Is_Provided()
+    {
+        var builder = PixBuilder.Create()
+            .WithKey("test@key");
+            
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
+        Assert.Contains("Merchant info is required", ex.Message);
+    }
+    
+    [Fact]
+    public void Should_Throw_If_No_Key_And_No_Url()
+    {
+        var builder = PixBuilder.Create()
+            .WithMerchant("Loja", "Cidade");
+            
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
+        Assert.Contains("Configure uma Chave", ex.Message);
+    }
+
+    [Fact]
+    public void Should_Throw_If_Url_Is_Null_Or_Empty()
+    {
+        Assert.Throws<ArgumentNullException>(() => PixBuilder.Create().WithDynamicUrl(null!));
+        Assert.Throws<ArgumentNullException>(() => PixBuilder.Create().WithDynamicUrl(""));
+    }
 }
