@@ -159,7 +159,7 @@ This project follows **Clean Architecture** principles:
 
 ## 🤝 Contribution
 
-Contributions are welcome! Please check the [Issues](https://github.com/SEU_USUARIO/OpenPix/issues) tab.
+Contributions are welcome! Please check the [Issues](https://github.com/eduardocp/open-pix/issues) tab.
 
 1.  Fork the project.
 2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
