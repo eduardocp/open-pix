@@ -113,9 +113,13 @@ public class PixBuilder
 
     private void ValidateState()
     {
-        // Validação: Precisa ter OU Chave OU URL
+        // Regra 1: Tem que ter pelo menos um
         if (_key is null && _url is null)
             throw new InvalidOperationException("Configure uma Chave (.WithKey) ou URL (.WithDynamicUrl) antes de gerar.");
+
+        // Regra 2 (NOVA): Não pode ter os dois ao mesmo tempo
+        if (_key is not null && _url is not null)
+            throw new InvalidOperationException("Não é possível configurar Chave (.WithKey) e URL (.WithDynamicUrl) ao mesmo tempo.");
 
         if (_merchant is null)
             throw new InvalidOperationException("Merchant info is required.");

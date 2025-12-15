@@ -16,7 +16,7 @@ public class PixBuilderTests
             .WithDynamicUrl(url)
             .WithMerchant("Loja Dinamica", "Sao Paulo")
             .WithAmount(100.00m)
-            .WithTransactionId("PEDIDO_DINAMICO")
+            .WithTransactionId("PEDIDODINAMICO")
             .Build();
 
         // Assert
