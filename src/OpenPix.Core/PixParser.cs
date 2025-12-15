@@ -23,7 +23,7 @@ public static class PixParser
         // 1. Integrity Validation (CRC)
         // The CRC is always the last 4 characters
         if (pixString.Length < 4)
-            throw new ArgumentException("String PIX muito curta/inválida.");
+            throw new ArgumentException("Pix string too short/invalid.");
 
         var dataWithoutCrc = pixString[..^4];
         var providedCrc = pixString[^4..];
@@ -31,7 +31,7 @@ public static class PixParser
 
         if (!providedCrc.Equals(calculatedCrc, StringComparison.OrdinalIgnoreCase))
         {
-            throw new ArgumentException($"CRC Inválido. Esperado: {calculatedCrc}, Recebido: {providedCrc}");
+            throw new ArgumentException($"Invalid CRC. Expected: {calculatedCrc}, Received: {providedCrc}");
         }
 
         // 2. Data Extraction

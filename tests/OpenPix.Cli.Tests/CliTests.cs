@@ -47,7 +47,7 @@ public class CliTests
 
         // Assert
         Assert.Equal(0, result);
-        Assert.Contains("=== PIX GERADO ===", consoleOutput.ToString());
+        Assert.Contains("=== GENERATED PIX ===", consoleOutput.ToString());
         Assert.Contains("=== QR CODE ===", consoleOutput.ToString());
     }
 
@@ -80,8 +80,8 @@ public class CliTests
 
         // Assert
         Assert.Equal(0, result);
-        Assert.Contains("=== DADOS DO PIX ===", consoleOutput.ToString());
-        Assert.Contains("Nome:      Loja Teste", consoleOutput.ToString()); // Check for the name we put
-        Assert.Contains("Checksum:  OK (Válido)", consoleOutput.ToString());
+        Assert.Contains("=== PIX DATA ===", consoleOutput.ToString());
+        Assert.Contains("Name:      Loja Teste", consoleOutput.ToString()); // Check for the name we put
+        Assert.Contains("Checksum:  OK (Valid)", consoleOutput.ToString());
     }
 }

@@ -18,7 +18,16 @@ public class PixBuilder
     public PixBuilder WithKey(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
-        _key = key.Trim();
+        
+        // Basic sanitization
+        key = key.Trim();
+
+        if (!PixKeyValidator.IsValid(key))
+        {
+            throw new ArgumentException($"Pix Key '{key}' seems invalid or unsupported format (CPF/CNPJ must be numbers only, phone must include +55).");
+        }
+
+        _key = key;
         return this;
     }
 
@@ -50,7 +59,7 @@ public class PixBuilder
         // The URL must start with https:// and typically the bank validates the domain
         if (string.IsNullOrWhiteSpace(url)) throw new ArgumentNullException(nameof(url));
         if (!url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-            throw new ArgumentException("A URL do Pix Dinâmico deve ser HTTPS.", nameof(url));
+            throw new ArgumentException("Dynamic Pix URL must be HTTPS.", nameof(url));
 
         _url = url;
         return this;
@@ -119,11 +128,11 @@ public class PixBuilder
     {
         // Rule 1: Must have at least one
         if (_key is null && _url is null)
-            throw new InvalidOperationException("Configure uma Chave (.WithKey) ou URL (.WithDynamicUrl) antes de gerar.");
+            throw new InvalidOperationException("Configure a Key (.WithKey) or URL (.WithDynamicUrl) before building.");
 
         // Rule 2: Cannot have both at the same time
         if (_key is not null && _url is not null)
-            throw new InvalidOperationException("Não é possível configurar Chave (.WithKey) e URL (.WithDynamicUrl) ao mesmo tempo.");
+            throw new InvalidOperationException("Cannot configure both Key (.WithKey) and URL (.WithDynamicUrl) at the same time.");
 
         if (_merchant is null)
             throw new InvalidOperationException("Merchant info is required.");

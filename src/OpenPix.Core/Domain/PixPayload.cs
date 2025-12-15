@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+using OpenPix.Core.Infra;
+
 namespace OpenPix.Core.Domain;
 
-public record PixPayload
+[JsonConverter(typeof(PixPayloadJsonConverter))]
+public record PixPayload(string RawString)
 {
-    public string RawString { get; }
     public string? PixKey { get; init; }
     public string? Url { get; init; }
     public Merchant? Merchant { get; init; }

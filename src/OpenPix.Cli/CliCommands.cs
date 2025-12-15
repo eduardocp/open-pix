@@ -8,18 +8,18 @@ public static class CliCommands
 {
     public static RootCommand BuildRootCommand()
     {
-        var rootCommand = new RootCommand("OpenPix CLI - Ferramenta para gerar e ler códigos Pix");
+        var rootCommand = new RootCommand("OpenPix CLI - Tool for generating and decoding Pix codes");
 
         // --- GENERATE COMMAND ---
-        var genCommand = new Command("gen", "Gera um QR Code Pix estático ou dinâmico");
+        var genCommand = new Command("gen", "Generates a Static or Dynamic Pix QR Code");
 
-        var keyOption = new Option<string?>("--key", "Chave Pix (CPF, Email, Tel, Aleatória)");
-        var urlOption = new Option<string?>("--url", "URL do PSP para Pix Dinâmico");
-        var nameOption = new Option<string>("--name", "Nome do Recebedor") { IsRequired = true };
-        var cityOption = new Option<string>("--city", "Cidade do Recebedor") { IsRequired = true };
-        var zipOption = new Option<string?>("--zip", "CEP do Recebedor");
-        var amountOption = new Option<decimal?>("--amount", "Valor da cobrança");
-        var txIdOption = new Option<string?>("--txid", "Identificador da Transação (Padrão: ***)");
+        var keyOption = new Option<string?>("--key", "Pix Key (CPF, Email, Phone, Random)");
+        var urlOption = new Option<string?>("--url", "PSP URL for Dynamic Pix");
+        var nameOption = new Option<string>("--name", "Receiver Name") { IsRequired = true };
+        var cityOption = new Option<string>("--city", "Receiver City") { IsRequired = true };
+        var zipOption = new Option<string?>("--zip", "Receiver Zip Code");
+        var amountOption = new Option<decimal?>("--amount", "Charge Amount");
+        var txIdOption = new Option<string?>("--txid", "Transaction ID (Default: ***)");
 
         genCommand.AddOption(keyOption);
         genCommand.AddOption(urlOption);
@@ -38,7 +38,7 @@ public static class CliCommands
             else if (!string.IsNullOrEmpty(url)) builder.WithDynamicUrl(url);
             else 
             {
-                throw new ArgumentException("Erro: Você deve fornecer --key OU --url.");
+                throw new ArgumentException("Error: You must provide --key OR --url.");
             }
 
             if (amount.HasValue) builder.WithAmount(amount.Value);
@@ -47,7 +47,7 @@ public static class CliCommands
             var payloadStr = builder.Build();
             var payloadObj = PixParser.Parse(payloadStr); 
 
-            Console.WriteLine("\n=== PIX GERADO ===");
+            Console.WriteLine("\n=== GENERATED PIX ===");
             Console.WriteLine(payloadStr);
             Console.WriteLine("\n=== QR CODE ===");
             
@@ -56,29 +56,29 @@ public static class CliCommands
         }, keyOption, urlOption, nameOption, cityOption, zipOption, amountOption, txIdOption);
 
         // --- DECODE COMMAND ---
-        var decodeCommand = new Command("decode", "Lê e valida uma string Pix");
-        var inputArgument = new Argument<string>("pix-string", "A string Pix (copia e cola)");
+        var decodeCommand = new Command("decode", "Decodes and validates a Pix string");
+        var inputArgument = new Argument<string>("pix-string", "The Pix string to decode");
 
         decodeCommand.AddArgument(inputArgument);
 
         decodeCommand.SetHandler((pixString) =>
         {
             var data = PixParser.Parse(pixString);
-            Console.WriteLine("\n=== DADOS DO PIX ===");
-            Console.WriteLine($"Nome:      {data.Merchant?.Name}");
-            Console.WriteLine($"Cidade:    {data.Merchant?.City}");
+            Console.WriteLine("\n=== PIX DATA ===");
+            Console.WriteLine($"Name:      {data.Merchant?.Name}");
+            Console.WriteLine($"City:      {data.Merchant?.City}");
             if(!string.IsNullOrEmpty(data.Merchant?.ZipCode)) 
-                Console.WriteLine($"CEP:       {data.Merchant.ZipCode}");
+                Console.WriteLine($"Zip:       {data.Merchant.ZipCode}");
                 
-            Console.WriteLine($"Valor:     {(data.Amount.HasValue ? data.Amount.Value.ToString("C2") : "Não informado")}");
+            Console.WriteLine($"Amount:    {(data.Amount.HasValue ? data.Amount.Value.ToString("C2") : "Not specified")}");
             
             if (!string.IsNullOrEmpty(data.Url))
-                    Console.WriteLine($"URL P.S.P: {data.Url}");
+                    Console.WriteLine($"PSP URL:   {data.Url}");
             else
-                    Console.WriteLine($"Chave Pix: {data.PixKey}");
+                    Console.WriteLine($"Pix Key:   {data.PixKey}");
                     
             Console.WriteLine($"TxID:      {data.TxId.Value}");
-            Console.WriteLine("Checksum:  OK (Válido)");
+            Console.WriteLine("Checksum:  OK (Valid)");
 
         }, inputArgument);
 
