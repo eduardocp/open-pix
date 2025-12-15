@@ -145,6 +145,35 @@ string svgContent = payload.ToSvg();
 Console.WriteLine(payload.ToAsciiArt());
 ```
 
+### 5. ASP.NET Core Integration
+
+Easily expose an endpoint that generates Pix QR Codes on the fly using our minimal API extension.
+
+**Program.cs:**
+
+```csharp
+using OpenPix.AspNetCore; // Import namespace
+
+var builder = WebApplication.CreateBuilder(args);
+
+// 1. Add OpenPix services
+// Configure PixKey in appsettings.json or via options
+builder.Services.AddOpenPix(options =>
+{
+    options.PixKey = "user@example.com";
+    options.MerchantName = "My Store";
+    options.City = "Sao Paulo";
+});
+
+var app = builder.Build();
+
+// 2. Map the generator endpoint (returns PNG image)
+app.MapPixQrCode("/api/pix/qrcode"); 
+// Url example: /api/pix/qrcode?amount=10.50&txid=ORDER123
+
+app.Run();
+```
+
 ---
 
 ## 🖥️ CLI Tool

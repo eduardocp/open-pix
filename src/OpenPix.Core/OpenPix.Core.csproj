@@ -4,17 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <PackageId>OpenPix</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>OpenPix.Core</PackageId>
     <Version>1.0.0</Version>
     <Authors>Eduardo Carisio</Authors>
-    <Company>https://github.com/eduardocp</Company>
-    <Description>Uma biblioteca leve, moderna e Clean Code para gerar e ler códigos PIX (EMV BR
-      Code) sem dependências externas.</Description>
-    <PackageTags>pix;emv;qrcode;payment;brazil;dotnet;parser</PackageTags>
+    <Company>Eduardo Carisio</Company>
+    <Description>High-performance, clean-code .NET library for handling Brazilian PIX (EMV BR Code) payments. Zero dependencies.</Description>
+    <PackageTags>pix;brazil;payments;emv;qrcode;fintech;dotnet-core</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/eduardocp/open-pix</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <Optimize>true</Optimize>
   </PropertyGroup>
