@@ -2,9 +2,9 @@
 
 **A high-performance, clean-code .NET library for handling Brazilian PIX (EMV BR Code) payments.**
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/SEU_USUARIO/OpenPix/dotnet.yml?branch=main)](https://github.com/SEU_USUARIO/OpenPix/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/eduardocp/open-pix/dotnet.yml?branch=main)](https://github.com/eduardocp/open-pix/actions)
 [![NuGet](https://img.shields.io/nuget/v/OpenPix.Core.svg)](https://www.nuget.org/packages/OpenPix.Core)
-[![License](https://img.shields.io/github/license/SEU_USUARIO/OpenPix)](LICENSE)
+[![License](https://img.shields.io/github/license/eduardocp/open-pix)](LICENSE)
 
 ## 💡 Why OpenPix?
 
@@ -13,7 +13,8 @@ Most PIX implementations in .NET rely on string concatenation and lack proper va
 - **⚡ High Performance:** Uses `ReadOnlySpan<char>` for parsing, avoiding unnecessary string allocations.
 - **🛡️ Bulletproof Validation:** Validates CRC-16 checksums, EMV field lengths, and character sets automatically.
 - **✨ Clean Code:** Exposes a fluent API and rich Domain Objects (`Merchant`, `TransactionId`) instead of raw strings.
-- **📦 Modular:** The Core library (`OpenPix.Core`) has **zero dependencies**. The visualization library (`OpenPix.QRCode`) is optional.
+- **🔗 Dynamic & Static:** Supports both Static PIX (Pix Key) and Dynamic PIX (PSP/Bank URL).
+- **📦 Modular:** The Core library (`OpenPix.Core`) has **zero dependencies**.
 
 ---
 
@@ -27,7 +28,15 @@ Lightweight, pure logic, zero dependencies.
 dotnet add package OpenPix.Core
 ```
 
-### 2. Visual Extension (Optional)
+### 2. ASP.NET Core Integration (Dependency Injection)
+
+Global configuration and injection for Web APIs.
+
+```bash
+dotnet add package OpenPix.AspNetCore
+```
+
+### 3. Visual Extension (Optional)
 
 If you need to render the QR Code image (PNG/SVG).
 
@@ -39,61 +48,44 @@ dotnet add package OpenPix.QRCode
 
 ## ⚡ Benchmarks
 
-OpenPix is optimized for high-throughput scenarios. Comparing _PixParser_ against a traditional naive implementation (using `Substring`/`Split`):
+OpenPix is optimized for high-throughput scenarios. Comparing `PixParser` against a traditional naive implementation:
 
 | Method               | Mean Speed   | Ratio     |
 | :------------------- | :----------- | :-------- |
 | **OpenPix**          | **1.231 us** | **1.00x** |
 | Naive Implementation | 6.009 us     | 4.88x     |
 
-_> **Result:** OpenPix is approximately **5x faster** than traditional string manipulation approaches._
+_> **Result:** OpenPix is approximately **5x faster** than traditional approaches._
 
 ---
 
 ## 📖 Usage
 
-### 1. Generating a Static PIX (Writer)
+### 1. Generating a Static PIX (Pix Key)
 
-Use the Fluent Builder to create a payment code. The library handles field truncation, accent removal (normalization), and CRC calculation.
+Ideal for small businesses or P2P transfers.
 
 ```csharp
 using OpenPix;
 
-try
-{
-    var rawPayload = PixBuilder.Create()
-        .WithKey("user@example.com")
-        .WithMerchant("My Store Name", "Sao Paulo")
-        .WithAmount(12.50m)
-        .WithTransactionId("ORDER12345") // Validates alphanum & length (max 25)
-        .Build();
-
-    Console.WriteLine(rawPayload);
-    // Output: 00020126580014br.gov.bcb.pix01...6304ABCD
-}
-catch (ArgumentException ex)
-{
-    // The library protects you from invalid PIX states
-    Console.WriteLine($"Validation Error: {ex.Message}");
-}
+var payload = PixBuilder.Create()
+    .WithKey("user@example.com")
+    .WithMerchant("My Store Name", "Sao Paulo")
+    .WithAmount(12.50m)
+    .WithTransactionId("ORDER12345")
+    .Build();
 ```
 
-### 2. Rendering the QR Code (Extension)
+### 2. Generating a Dynamic PIX (PSP URL)
 
-If you installed `OpenPix.QRCode`, you can convert the string directly to an image for your frontend.
+Ideal for e-commerce integrations where the Bank/PSP provides a unique URL (Location).
 
 ```csharp
-using OpenPix;
-using OpenPix.QRCode; // Import extension methods
-
-var payload = PixBuilder.Create()...Build();
-
-// Generates a Base64 string ready for <img src="...">
-// Automatically sets white background/black modules for banking app compatibility.
-string base64Png = payload.ToPngBase64(pixelsPerModule: 10);
-
-// Generates an SVG string for scalable vector graphics
-string svgContent = payload.ToSvg();
+var payload = PixBuilder.Create()
+    .WithDynamicUrl("https://pix.example.com/qr/v2/9d36b84f-70b3-40a1")
+    .WithMerchant("My Store Name", "Sao Paulo")
+    .WithAmount(50.00m) // Optional for Dynamic, but recommended for display
+    .Build();
 ```
 
 ### 3. Parsing and Validating (Reader)
@@ -109,6 +101,15 @@ try
 {
     var pixData = PixParser.Parse(rawString);
 
+    if (!string.IsNullOrEmpty(pixData.Url))
+    {
+        Console.WriteLine($"Dynamic URL: {pixData.Url}");
+    }
+    else
+    {
+        Console.WriteLine($"Pix Key: {pixData.PixKey}");
+    }
+
     Console.WriteLine($"Merchant: {pixData.Merchant?.Name}");
     Console.WriteLine($"Amount:   {pixData.Amount:C}");
     Console.WriteLine($"TxID:     {pixData.TxId.Value}");
@@ -117,6 +118,24 @@ catch (ArgumentException ex)
 {
     Console.WriteLine("Invalid PIX Code or Checksum mismatch.");
 }
+```
+
+### 4. Rendering the QR Code
+
+If you installed `OpenPix.QRCode`, you can convert the string directly to an image.
+
+```csharp
+using OpenPix;
+using OpenPix.QRCode; // Import extension methods
+
+var payload = PixBuilder.Create()...Build();
+
+// Generates a Base64 string ready for <img src="...">
+// Automatically sets white background/black modules for banking app compatibility.
+string base64Png = payload.ToPngBase64(pixelsPerModule: 10);
+
+// Generates an SVG string for scalable vector graphics
+string svgContent = payload.ToSvg();
 ```
 
 ---
@@ -132,6 +151,8 @@ This project follows **Clean Architecture** principles:
 - **OpenPix.QRCode:**
   - Depends on `QRCoder` to handle the graphical matrix generation.
   - Extends the Core functionality.
+
+* **OpenPix.AspNetCore:** `IServiceCollection` extensions and `IPixClient` for Web APIs.
 
 ---
 

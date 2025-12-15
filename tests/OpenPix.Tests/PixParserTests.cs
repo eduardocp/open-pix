@@ -34,4 +34,23 @@ public class PixParserTests
         Assert.Equal("teste@pix.com.br", result.PixKey);
         Assert.Equal("Testador", result.Merchant?.Name);
     }
+
+    [Fact]
+    public void Should_Parse_Dynamic_Pix_Url()
+    {
+        // Arrange: Vamos criar um PIX Dinâmico real
+        var url = "https://qr.banco.com/uuid";
+        var rawPix = PixBuilder.Create()
+            .WithDynamicUrl(url)
+            .WithMerchant("Loja Teste", "SP")
+            .WithTransactionId("***")
+            .Build();
+
+        // Act
+        var result = PixParser.Parse(rawPix);
+
+        // Assert
+        Assert.Equal(url, result.Url); // Deve ter preenchido a URL
+        Assert.Null(result.PixKey);    // A chave deve estar nula
+    }
 }
