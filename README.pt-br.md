@@ -14,7 +14,7 @@
 A maioria das implementações de PIX em .NET depende de concatenação de strings e carece de validação adequada. O **OpenPix** foi construído com **Domain-Driven Design (DDD)** e **Desempenho** em mente.
 
 - **⚡ Alto Desempenho:** Utiliza `ReadOnlySpan<char>` para o parsing, evitando alocações desnecessárias de memória (strings).
-- **🛡️ Validação Robusta:** Valida checksums CRC-16, tamanhos de campos EMV e conjuntos de caracteres automaticamente.
+- **🛡️ Validação Blindada:** Valida CRC-16, tamanhos de campos EMV e **dígitos verificadores de CPF/CNPJ (Mod11)**, garantindo que chaves inválidas não sejam geradas.
 - **✨ Código Limpo:** Expõe uma API fluente e Objetos de Domínio ricos (`Merchant`, `TransactionId`) em vez de strings cruas.
 - **🔗 Dinâmico & Estático:** Suporta tanto PIX Estático (Chave Pix) quanto PIX Dinâmico (URL do PSP/Banco).
 - **📦 Modular:** A biblioteca Core (`OpenPix.Core`) tem **zero dependências**.
@@ -91,6 +91,8 @@ var payload = PixBuilder.Create()
     .WithTransactionId("PEDIDO12345")
     .Build();
 ```
+
+> **Nota:** O OpenPix valida automaticamente os dígitos verificadores de CPF/CNPJ. Se você passar uma chave inválida (erro de digitação), ele lançará uma exceção imediatamente para evitar gerar um QR Code inútil.
 
 ### 2. Gerando um PIX Dinâmico (URL do PSP)
 
