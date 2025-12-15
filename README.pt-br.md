@@ -51,14 +51,27 @@ dotnet add package OpenPix.QRCode
 
 ## ⚡ Benchmarks
 
-O OpenPix é otimizado para cenários de alto tráfego. Comparando o `PixParser` contra uma implementação ingênua tradicional:
+O OpenPix é otimizado para cenários de alto tráfego.
 
-| Método               | Velocidade Média | Razão     |
-| :------------------- | :--------------- | :-------- |
-| **OpenPix**          | **1.231 us**     | **1.00x** |
-| Implementação Ingênua| 6.009 us         | 4.88x     |
+### 1. Leitura (Parsing)
 
-_> **Resultado:** O OpenPix é aproximadamente **5x mais rápido** que abordagens tradicionais._
+Comparando o `PixParser` contra manipulação de strings tradicional:
+
+| Método               | Média        | Alocado   | Razão     |
+| :------------------- | :----------- | :-------- | :-------- |
+| **OpenPix**          | **2.664 μs** | **272 B** | **1.00x** |
+| Implementação Comum  | 10.263 μs    | 15,824 B  | 3.85x     |
+
+### 2. Geração (Builder)
+
+Comparando `PixBuilder` (API Fluente + Validação Completa) contra concatenação manual de strings:
+
+| Método      | Média       | Alocado     | Benefícios                                 |
+| :---------- | :---------- | :---------- | :----------------------------------------- |
+| **OpenPix** | **1.48 μs** | **1.83 KB** | **Menos Memória**, Validação, Código Limpo |
+| Manual      | 1.50 μs     | 3.02 KB     | Propenso a erros, Difícil manutenção       |
+
+_> **Resultado:** OpenPix permite escrever **código mais limpo e seguro** usando **40% menos memória** que a concatenação manual._
 
 ---
 

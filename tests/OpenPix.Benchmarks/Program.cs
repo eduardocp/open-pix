@@ -2,4 +2,5 @@
 using OpenPix.Benchmarks;
 
 // Roda o benchmark
-BenchmarkRunner.Run<ParsingBenchmark>();
+// Run all benchmarks in this assembly
+BenchmarkRunner.Run(typeof(Program).Assembly);

@@ -52,14 +52,27 @@ dotnet add package OpenPix.QRCode
 
 ## ⚡ Benchmarks
 
-OpenPix is optimized for high-throughput scenarios. Comparing `PixParser` against a traditional naive implementation:
+OpenPix is optimized for high-throughput scenarios.
 
-| Method               | Mean Speed   | Ratio     |
-| :------------------- | :----------- | :-------- |
-| **OpenPix**          | **1.231 us** | **1.00x** |
-| Naive Implementation | 6.009 us     | 4.88x     |
+### 1. Parsing (Reader)
 
-_> **Result:** OpenPix is approximately **5x faster** than traditional approaches._
+Comparing `PixParser` against a traditional string manipulation:
+
+| Method               | Mean         | Allocated | Ratio     |
+| :------------------- | :----------- | :-------- | :-------- |
+| **OpenPix**          | **2.664 μs** | **272 B** | **1.00x** |
+| Naive Implementation | 10.263 μs    | 15,824 B  | 3.85x     |
+
+### 2. Building (Generator)
+
+Comparing `PixBuilder` (Fluent API + Full Validation) against manual string concatenation:
+
+| Method               | Mean         | Allocated   | Benefits                                     |
+| :------------------- | :----------- | :---------- | :------------------------------------------- |
+| **OpenPix**          | **1.48 μs**  | **1.83 KB** | **Less Memory**, Full Validation, Clean Code |
+| Naive Implementation | 1.50 μs      | 3.02 KB     | Error-prone, Hard to Maintain                |
+
+_> **Result:** OpenPix allows you to write **cleaner and safer code** while using **40% less memory** than manual concatenation._
 
 ---
 
