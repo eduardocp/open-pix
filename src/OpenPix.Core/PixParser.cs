@@ -40,6 +40,7 @@ public static class PixParser
         string? name = null;
         string? city = null;
         string? key = null;
+        string? url = null;
         decimal? amount = null;
         string? txId = null;
 
@@ -69,8 +70,9 @@ public static class PixParser
             }
             else if (id.SequenceEqual(IdMerchantAccount))
             {
-                // A chave PIX fica dentro da tag 26, subtag 01
+                // Tenta ler a Chave (01)
                 key = ExtractSubField(value, "01");
+                url = ExtractSubField(value, "25");
             }
             else if (id.SequenceEqual(IdAdditionalData))
             {
@@ -85,6 +87,7 @@ public static class PixParser
         return new PixPayload(pixString)
         {
             PixKey = key,
+            Url = url,
             Merchant = (name != null && city != null) ? new Merchant(name, city) : null,
             Amount = amount,
             TxId = new TransactionId(txId)
