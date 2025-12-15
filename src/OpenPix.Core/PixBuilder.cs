@@ -22,10 +22,10 @@ public class PixBuilder
         return this;
     }
 
-    public PixBuilder WithMerchant(string name, string city)
+    public PixBuilder WithMerchant(string name, string city, string? zipCode = null)
     {
         // Validation happens inside the Merchant class
-        _merchant = new Merchant(name, city);
+        _merchant = new Merchant(name, city, zipCode);
         return this;
     }
 
@@ -101,6 +101,11 @@ public class PixBuilder
         sb.Append(EmvCodec.Format("58", "BR"));
         sb.Append(EmvCodec.Format("59", _merchant!.Name));
         sb.Append(EmvCodec.Format("60", _merchant.City));
+
+        if (!string.IsNullOrEmpty(_merchant.ZipCode))
+        {
+            sb.Append(EmvCodec.Format("61", _merchant.ZipCode));
+        }
 
         // TxID (Tag 62, Subtag 05)
         var txIdContent = EmvCodec.Format("05", _txId.Value);

@@ -11,6 +11,7 @@ public static class PixParser
     private const string IdAmount = "54";
     private const string IdMerchantName = "59";
     private const string IdMerchantCity = "60";
+    private const string IdPostalCode = "61";
     private const string IdAdditionalData = "62";
     private const string IdCrc16 = "63";
 
@@ -39,6 +40,7 @@ public static class PixParser
 
         string? name = null;
         string? city = null;
+        string? zipCode = null;
         string? key = null;
         string? url = null;
         decimal? amount = null;
@@ -63,6 +65,7 @@ public static class PixParser
             // Routing
             if (id.SequenceEqual(IdMerchantName)) name = value.ToString();
             else if (id.SequenceEqual(IdMerchantCity)) city = value.ToString();
+            else if (id.SequenceEqual(IdPostalCode)) zipCode = value.ToString();
             else if (id.SequenceEqual(IdAmount))
             {
                 if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal val))
@@ -88,7 +91,7 @@ public static class PixParser
         {
             PixKey = key,
             Url = url,
-            Merchant = (name != null && city != null) ? new Merchant(name, city) : null,
+            Merchant = (name != null && city != null) ? new Merchant(name, city, zipCode) : null,
             Amount = amount,
             TxId = new TransactionId(txId)
         };

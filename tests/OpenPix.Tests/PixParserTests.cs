@@ -32,6 +32,21 @@ public class PixParserTests
     }
 
     [Fact]
+    public void Should_Parse_Pix_With_ZipCode()
+    {
+        var zipCode = "12345678";
+        var payload = PixBuilder.Create()
+            .WithKey("chave@pix")
+            .WithMerchant("Loja", "Cidade", zipCode)
+            .Build();
+
+        var result = PixParser.Parse(payload);
+
+        Assert.NotNull(result.Merchant);
+        Assert.Equal(zipCode, result.Merchant.ZipCode);
+    }
+
+    [Fact]
     public void Should_Parse_Dynamic_Pix_Url()
     {
         // Arrange

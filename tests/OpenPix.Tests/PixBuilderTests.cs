@@ -25,6 +25,27 @@ public class PixBuilderTests
     }
 
     [Fact]
+    public void Should_Include_ZipCode_In_Payload()
+    {
+        // Arrange
+        var zipCode = "12345678";
+        
+        // Act
+        var payload = PixBuilder.Create()
+            .WithKey("test@key")
+            .WithMerchant("Loja", "Sao Paulo", zipCode)
+            .WithAmount(10.00m)
+            .Build();
+
+        // Assert
+        // Tag 61 (Postal Code) should be present
+        // 61 -> Tag ID
+        // 08 -> Length
+        // 12345678 -> Value
+        Assert.Contains("610812345678", payload);
+    }
+
+    [Fact]
     public void Should_Throw_If_Both_Key_And_Url_Are_Provided()
     {
         // Arrange
