@@ -25,4 +25,11 @@ jobs:
               run: dotnet build OpenPix.sln --no-restore --configuration Release
 
             - name: Test
-              run: dotnet test OpenPix.sln --no-build --verbosity normal --configuration Release
+              run: dotnet test OpenPix.sln --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=lcov /p:CoverletOutput=./lcov.info
+
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v4
+              with:
+                token: ${{ secrets.CODECOV_TOKEN }}
+                files: ./lcov.info
+                fail_ci_if_error: true
