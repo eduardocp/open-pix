@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>OpenPix</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Eduardo Carisio</Authors>
+    <Company>https://github.com/eduardocp</Company>
+    <Description>Uma biblioteca leve, moderna e Clean Code para gerar e ler códigos PIX (EMV BR
+      Code) sem dependências externas.</Description>
+    <PackageTags>pix;emv;qrcode;payment;brazil;dotnet;parser</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/eduardocp/open-pix</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+</Project>
