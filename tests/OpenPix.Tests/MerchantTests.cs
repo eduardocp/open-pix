@@ -1,5 +1,5 @@
 using OpenPix.Core.Domain;
-using Xunit; // Certifique-se que o xUnit está instalado
+using Xunit;
 
 namespace OpenPix.Tests;
 
@@ -23,13 +23,13 @@ public class MerchantTests
     [Fact]
     public void Should_Truncate_Name_If_Too_Long()
     {
-        // Arrange (Nome com 30 chars)
+        // Arrange
         var longName = "Empresa Muito Grande LTDA do Brasil";
 
         // Act
         var merchant = new Merchant(longName, "SP");
 
-        // Assert (Deve cortar no 25º caractere)
+        // Assert
         Assert.Equal(25, merchant.Name.Length);
         Assert.Equal("Empresa Muito Grande LTDA", merchant.Name);
     }
@@ -37,13 +37,13 @@ public class MerchantTests
     [Fact]
     public void Should_Truncate_City_If_Too_Long()
     {
-        // Arrange (Cidade com mais de 15 chars)
-        var longCity = "Pindamonhangaba do Norte"; // 24 chars
+        // Arrange
+        var longCity = "Pindamonhangaba do Norte";
 
         // Act
         var merchant = new Merchant("Loja", longCity);
 
-        // Assert (Deve cortar no 15º caractere)
+        // Assert
         Assert.Equal(15, merchant.City.Length);
         Assert.Equal("Pindamonhangaba", merchant.City);
     }

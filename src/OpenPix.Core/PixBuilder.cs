@@ -6,7 +6,7 @@ namespace OpenPix.Core;
 
 public class PixBuilder
 {
-    // Estado interno usando Value Objects (Nullables até o Build)
+    // Internal state using Value Objects (Nullables until Build)
     private string? _key;
     private string? _url;
     private Merchant? _merchant;
@@ -24,7 +24,7 @@ public class PixBuilder
 
     public PixBuilder WithMerchant(string name, string city)
     {
-        // A validação acontece dentro da classe Merchant
+        // Validation happens inside the Merchant class
         _merchant = new Merchant(name, city);
         return this;
     }
@@ -40,14 +40,14 @@ public class PixBuilder
 
     public PixBuilder WithTransactionId(string txId)
     {
-        // A validação acontece dentro da classe TransactionId
+        // Validation happens inside the TransactionId class
         _txId = new TransactionId(txId);
         return this;
     }
 
     public PixBuilder WithDynamicUrl(string url)
     {
-        // A URL deve começar com https:// e geralmente o banco valida o domínio
+        // The URL must start with https:// and typically the bank validates the domain
         if (string.IsNullOrWhiteSpace(url)) throw new ArgumentNullException(nameof(url));
         if (!url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("A URL do Pix Dinâmico deve ser HTTPS.", nameof(url));
@@ -58,47 +58,46 @@ public class PixBuilder
 
     public string Build()
     {
-        // Fail Fast: Valida estado antes de começar
+        // Fail Fast: Validate state before starting
         ValidateState();
 
         var sb = new StringBuilder();
 
-        // Cabeçalhos Fixos
+        // Fixed Headers
         sb.Append(EmvCodec.Format("00", "01"));
 
         // Tag 26: Merchant Account Information
         var accountInfoSb = new StringBuilder();
         accountInfoSb.Append(EmvCodec.Format("00", "br.gov.bcb.pix"));
 
-        // LÓGICA DE DECISÃO: Estático (Chave) vs Dinâmico (URL)
         if (!string.IsNullOrEmpty(_url))
         {
-            // Pix Dinâmico usa o ID 25 para a URL
-            // Importante: A URL não pode ter 'https://' no payload final, apenas o domínio/caminho
-            // Mas a regra de remoção do protocolo varia por PSP. 
-            // O padrão do BACEN diz para usar a string completa, mas muitos removem o protocolo.
-            // Vamos assumir que a URL passada já é a correta fornecida pelo banco.
+            // Dynamic Pix uses ID 25 for the URL
+            // Important: The URL cannot have 'https://' in the final payload, only the domain/path
+            // But the protocol removal rule varies by PSP. 
+            // The BACEN standard says to use the full string, but many remove the protocol.
+            // Let's assume the passed URL is the correct one provided by the bank.
             accountInfoSb.Append(EmvCodec.Format("25", _url));
         }
         else
         {
-            // Pix Estático usa o ID 01 para a Chave
+            // Static Pix uses ID 01 for the Key
             accountInfoSb.Append(EmvCodec.Format("01", _key!));
         }
 
         sb.Append(EmvCodec.Format("26", accountInfoSb.ToString()));
 
-        // Metadata Fixa
+        // Fixed Metadata
         sb.Append(EmvCodec.Format("52", "0000")); // Merchant Category
         sb.Append(EmvCodec.Format("53", "986"));  // Currency BRL
 
-        // Valor (Opcional)
+        // Value (Optional)
         if (_amount.HasValue)
         {
             sb.Append(EmvCodec.Format("54", EmvCodec.FormatAmount(_amount.Value)));
         }
 
-        // Dados do Recebedor
+        // Receiver Data
         sb.Append(EmvCodec.Format("58", "BR"));
         sb.Append(EmvCodec.Format("59", _merchant!.Name));
         sb.Append(EmvCodec.Format("60", _merchant.City));
@@ -107,17 +106,17 @@ public class PixBuilder
         var txIdContent = EmvCodec.Format("05", _txId.Value);
         sb.Append(EmvCodec.Format("62", txIdContent));
 
-        // Finaliza com CRC
+        // Finishes with CRC
         return EmvCodec.AssemblePayload(sb);
     }
 
     private void ValidateState()
     {
-        // Regra 1: Tem que ter pelo menos um
+        // Rule 1: Must have at least one
         if (_key is null && _url is null)
             throw new InvalidOperationException("Configure uma Chave (.WithKey) ou URL (.WithDynamicUrl) antes de gerar.");
 
-        // Regra 2 (NOVA): Não pode ter os dois ao mesmo tempo
+        // Rule 2: Cannot have both at the same time
         if (_key is not null && _url is not null)
             throw new InvalidOperationException("Não é possível configurar Chave (.WithKey) e URL (.WithDynamicUrl) ao mesmo tempo.");
 

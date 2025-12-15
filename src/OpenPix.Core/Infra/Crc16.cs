@@ -9,8 +9,8 @@ internal static class Crc16
 
     public static string ComputeChecksum(string payload)
     {
-        // Importante: PIX trabalha com ASCII estendido/UTF8 simples. 
-        // Vamos garantir que estamos pegando os bytes corretos.
+        // Important: PIX works with extended ASCII/simple UTF8.
+        // Let's ensure we are getting the correct bytes.
         var bytes = Encoding.UTF8.GetBytes(payload);
 
         ushort crc = InitialValue;

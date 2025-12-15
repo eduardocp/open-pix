@@ -1,4 +1,4 @@
-using OpenPix.Core.Infra; // Adicione o using
+using OpenPix.Core.Infra; // Add the using directive
 
 namespace OpenPix.Core.Domain;
 
@@ -12,12 +12,12 @@ public record Merchant
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentException.ThrowIfNullOrWhiteSpace(city);
 
-        // 1. Remove acentos
+        // 1. Remove diacritics
         var cleanName = name.RemoveDiacritics();
         var cleanCity = city.RemoveDiacritics();
 
-        // 2. Trunca para o tamanho máximo permitido pelo EMV
-        // Nome: máx 25 chars | Cidade: máx 15 chars
+        // 2. Truncate to maximum length allowed by EMV
+        // Name: max 25 chars | City: max 15 chars
         Name = cleanName.Length > 25 ? cleanName[..25] : cleanName;
         City = cleanCity.Length > 15 ? cleanCity[..15] : cleanCity;
     }

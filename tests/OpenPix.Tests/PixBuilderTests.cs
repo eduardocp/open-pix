@@ -21,7 +21,7 @@ public class PixBuilderTests
 
         // Assert
         Assert.NotNull(payload);
-        Assert.Contains(url, payload); // Garante que a URL entrou na string
+        Assert.Contains(url, payload);
     }
 
     [Fact]
@@ -30,15 +30,13 @@ public class PixBuilderTests
         // Arrange
         var builder = PixBuilder.Create()
             .WithKey("chave@pix.com")
-            .WithDynamicUrl("https://url-do-banco.com") // <--- Conflito!
+            .WithDynamicUrl("https://url-do-banco.com")
             .WithMerchant("Teste", "Cidade");
 
         // Act & Assert
-        // O Pix não pode ser Estático e Dinâmico ao mesmo tempo
-        // Verifique se a sua implementação do ValidateState lança InvalidOperationException
         var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
 
-        Assert.Contains("WithKey", ex.Message); // O erro deve mencionar as opções
+        Assert.Contains("WithKey", ex.Message);
         Assert.Contains("WithDynamicUrl", ex.Message);
     }
 

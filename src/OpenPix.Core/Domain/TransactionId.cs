@@ -12,7 +12,7 @@ public partial record TransactionId
 
     public TransactionId(string? value)
     {
-        // CORREÇÃO: Aceitar nulo, vazio OU o padrão "***" explicitamente
+        // FIX: Explicitly accept null, empty OR the default "***"
         if (string.IsNullOrEmpty(value) || value == "***")
         {
             Value = "***";

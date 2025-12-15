@@ -8,10 +8,10 @@ public static class OpenPixServiceCollectionExtensions
         this IServiceCollection services,
         Action<OpenPixOptions> configureOptions)
     {
-        // 1. Registra as opções
+        // 1. Register options
         services.Configure(configureOptions);
 
-        // 2. Registra o serviço como Singleton (pois as configs não mudam por request)
+        // 2. Register the service as Singleton (since configs don't change per request)
         services.AddSingleton<IPixClient, PixClient>();
 
         return services;

@@ -11,7 +11,6 @@ public class EmvCodecTests
     {
         var id = "00";
         var value = "01";
-        // 00 + length(2) + value
         var expected = "000201";
         
         var result = EmvCodec.Format(id, value);
@@ -43,11 +42,8 @@ public class EmvCodecTests
     [Fact]
     public void AssemblePayload_Should_Append_Crc()
     {
-        // 000201 = Payload fake
         var sb = new StringBuilder("000201");
         
-        // AssemblePayload adiciona "6304" e o CRC.
-        // Total = 000201 + 6304 + CRC(4 chars)
         var result = EmvCodec.AssemblePayload(sb);
         
         Assert.EndsWith("6304", result.Substring(0, result.Length - 4));

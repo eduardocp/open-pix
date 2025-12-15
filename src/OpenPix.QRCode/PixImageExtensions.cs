@@ -5,15 +5,15 @@ namespace OpenPix.QRCode;
 public static class PixImageExtensions
 {
     /// <summary>
-    /// Gera a representação gráfica do PIX em formato Base64 (PNG).
-    /// Ideal para exibir em tags <img src="data:image/png;base64,..." />
+    /// Generates the PIX graphic representation in Base64 (PNG).
+    /// Ideal for displaying in <img src="data:image/png;base64,..." /> tags
     /// </summary>
     public static string ToPngBase64(this string pixString, int pixelsPerModule = 20)
     {
         using var qrGenerator = new QRCodeGenerator();
         using var qrCodeData = qrGenerator.CreateQrCode(pixString, QRCodeGenerator.ECCLevel.M);
 
-        // Usamos PngByteQRCode pois ele não depende de System.Drawing (funciona no Linux/Docker)
+        // We use PngByteQRCode as it does not depend on System.Drawing (works on Linux/Docker)
         using var qrCode = new PngByteQRCode(qrCodeData);
 
         byte[] qrCodeBytes = qrCode.GetGraphic(pixelsPerModule);
@@ -21,8 +21,8 @@ public static class PixImageExtensions
     }
 
     /// <summary>
-    /// Gera o código SVG do QR Code.
-    /// Ideal para escalar infinitamente sem perder qualidade.
+    /// Generates the QR Code SVG code.
+    /// Ideal for infinite scaling without losing quality.
     /// </summary>
     public static string ToSvg(this string pixString, int pixelsPerModule = 20)
     {

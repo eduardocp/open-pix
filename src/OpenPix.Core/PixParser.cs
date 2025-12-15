@@ -6,7 +6,7 @@ namespace OpenPix.Core;
 
 public static class PixParser
 {
-    // IDs das Tags conforme manual do BACEN
+    // Tag IDs according to BACEN manual
     private const string IdMerchantAccount = "26";
     private const string IdAmount = "54";
     private const string IdMerchantName = "59";
@@ -19,8 +19,8 @@ public static class PixParser
         if (string.IsNullOrWhiteSpace(pixString))
             throw new ArgumentNullException(nameof(pixString));
 
-        // 1. Validação de Integridade (CRC)
-        // O CRC são sempre os últimos 4 caracteres
+        // 1. Integrity Validation (CRC)
+        // The CRC is always the last 4 characters
         if (pixString.Length < 4)
             throw new ArgumentException("String PIX muito curta/inválida.");
 
@@ -33,8 +33,8 @@ public static class PixParser
             throw new ArgumentException($"CRC Inválido. Esperado: {calculatedCrc}, Recebido: {providedCrc}");
         }
 
-        // 2. Extração dos Dados
-        // Usamos Span para percorrer a string sem criar cópias desnecessárias na memória
+        // 2. Data Extraction
+        // We use Span to traverse the string without creating unnecessary memory copies
         var span = pixString.AsSpan();
 
         string? name = null;
@@ -47,7 +47,7 @@ public static class PixParser
         int i = 0;
         while (i < span.Length)
         {
-            // Proteção contra leitura além do fim
+            // Protection against reading past the end
             if (i + 4 > span.Length) break;
 
             var id = span.Slice(i, 2);
@@ -60,7 +60,7 @@ public static class PixParser
 
             var value = span.Slice(i, length);
 
-            // Roteamento
+            // Routing
             if (id.SequenceEqual(IdMerchantName)) name = value.ToString();
             else if (id.SequenceEqual(IdMerchantCity)) city = value.ToString();
             else if (id.SequenceEqual(IdAmount))
@@ -70,20 +70,20 @@ public static class PixParser
             }
             else if (id.SequenceEqual(IdMerchantAccount))
             {
-                // Tenta ler a Chave (01)
+                // Tries to read the Key (01)
                 key = ExtractSubField(value, "01");
                 url = ExtractSubField(value, "25");
             }
             else if (id.SequenceEqual(IdAdditionalData))
             {
-                // O TxId fica dentro da tag 62, subtag 05
+                // TxId is inside tag 62, subtag 05
                 txId = ExtractSubField(value, "05");
             }
 
             i += length;
         }
 
-        // 3. Construção do Objeto de Domínio
+        // 3. Domain Object Construction
         return new PixPayload(pixString)
         {
             PixKey = key,
@@ -94,7 +94,7 @@ public static class PixParser
         };
     }
 
-    // Método auxiliar para ler sub-campos (ex: Chave dentro da tag 26)
+    // Helper method to read sub-fields (e.g., Key inside tag 26)
     private static string? ExtractSubField(ReadOnlySpan<char> container, ReadOnlySpan<char> targetId)
     {
         int i = 0;

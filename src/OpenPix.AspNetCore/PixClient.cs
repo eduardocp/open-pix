@@ -18,21 +18,21 @@ public class PixClient : IPixClient
 
     public PixPayload CreatePayload(decimal amount, string? txId = null)
     {
-        // 1. Gera a string RAW usando as configurações injetadas
+        // 1. Generate the RAW string using injected configurations
         var rawString = PixBuilder.Create()
             .WithKey(_options.PixKey)
             .WithMerchant(_options.MerchantName, _options.City)
             .WithAmount(amount)
-            .WithTransactionId(txId ?? "***") // Se nulo, usa o padrão
+            .WithTransactionId(txId ?? "***") // If null, uses the default
             .Build();
 
-        // 2. Converte a string num objeto rico usando o Parser
+        // 2. Converts the string into a rich object using the Parser
         return PixParser.Parse(rawString);
     }
 
     public PixPayload CreatePayload(string pixKey, decimal amount, string? txId = null)
     {
-        // Versão com sobrecarga de chave (ex: Marketplace)
+        // Version with key overload (e.g., Marketplace)
         var rawString = PixBuilder.Create()
             .WithKey(pixKey)
             .WithMerchant(_options.MerchantName, _options.City)
