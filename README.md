@@ -5,6 +5,7 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/eduardocp/open-pix/dotnet.yml?branch=main)](https://github.com/eduardocp/open-pix/actions)
 [![NuGet](https://img.shields.io/nuget/v/OpenPix.Core.svg)](https://www.nuget.org/packages/OpenPix.Core)
 [![License](https://img.shields.io/github/license/eduardocp/open-pix)](LICENSE)
+[![codecov](https://codecov.io/github/eduardocp/open-pix/graph/badge.svg?token=GDCOG0D4UR)](https://codecov.io/github/eduardocp/open-pix)
 
 ## 💡 Why OpenPix?
 
