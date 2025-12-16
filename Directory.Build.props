@@ -13,6 +13,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
     
     <!-- Readme config -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
